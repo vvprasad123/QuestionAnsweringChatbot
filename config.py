@@ -42,8 +42,12 @@ client = None
 if GOOGLE_API_KEY:
     try:
         client = genai.Client(api_key=GOOGLE_API_KEY)
-    except Exception:
+    except Exception as exc:
         client = None
+        GOOGLE_API_KEY = None
+        GOOGLE_API_KEY_ERROR = str(exc)
+else:
+    GOOGLE_API_KEY_ERROR = "Missing GOOGLE_API_KEY"
 
 # Model Name
 MODEL_NAME = "gemini-2.5-flash"

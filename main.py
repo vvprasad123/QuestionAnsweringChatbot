@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from ui import ChatUI
 from file_handler import FileHandler
 from image_handler import ImageHandler
-from config import GOOGLE_API_KEY
+from config import GOOGLE_API_KEY, GOOGLE_API_KEY_ERROR
 
 
 # ==========================================
@@ -30,6 +30,8 @@ if not api_key:
         initial_sidebar_state="expanded"
     )
     st.error("❌ GOOGLE_API_KEY not found. Add it to Streamlit Cloud secrets or your local .env file.")
+    if GOOGLE_API_KEY_ERROR:
+        st.caption(f"Details: {GOOGLE_API_KEY_ERROR}")
     st.stop()
 
 
