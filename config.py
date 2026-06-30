@@ -42,6 +42,7 @@ def get_api_key():
 
 # API Key
 GOOGLE_API_KEY = get_api_key()
+GOOGLE_API_KEY_ERROR = None
 
 # Gemini Client
 client = None
