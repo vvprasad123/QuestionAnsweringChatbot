@@ -23,10 +23,17 @@ def get_api_key():
 
     try:
         secrets = st.secrets
-        for key_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
-            value = secrets.get(key_name)
-            if value:
-                return value
+        if hasattr(secrets, "get"):
+            for key_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+                value = secrets.get(key_name)
+                if isinstance(value, str) and value.strip():
+                    return value.strip()
+        if hasattr(secrets, "to_dict"):
+            secrets_dict = secrets.to_dict()
+            for key_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+                value = secrets_dict.get(key_name)
+                if isinstance(value, str) and value.strip():
+                    return value.strip()
     except Exception:
         pass
 
