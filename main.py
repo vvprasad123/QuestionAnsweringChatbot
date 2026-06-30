@@ -149,6 +149,10 @@ if new_chat:
 if len(st.session_state.messages) == 0:
 
     ui.suggestion_cards()
+
+    if not api_key:
+        st.info("⚠️ Add GOOGLE_API_KEY in Streamlit Cloud secrets to enable AI responses.")
+
 # ==========================================
 # Document Upload
 # ==========================================
