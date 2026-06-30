@@ -7,11 +7,11 @@ Professional AI Assistant
 import os
 import streamlit as st
 from dotenv import load_dotenv
-from google import genai
 
 from ui import ChatUI
 from file_handler import FileHandler
 from image_handler import ImageHandler
+from config import GOOGLE_API_KEY
 
 
 # ==========================================
@@ -20,20 +20,17 @@ from image_handler import ImageHandler
 
 load_dotenv()
 
-api_key = os.getenv("GOOGLE_API_KEY")
+api_key = GOOGLE_API_KEY or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-
-    st.error("❌ GOOGLE_API_KEY not found.")
-
+    st.set_page_config(
+        page_title="AI Assistant",
+        page_icon="🤖",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    st.error("❌ GOOGLE_API_KEY not found. Add it to Streamlit Cloud secrets or your local .env file.")
     st.stop()
-
-
-# ==========================================
-# Gemini Client
-# ==========================================
-
-client = genai.Client(api_key=api_key)
 
 
 # ==========================================

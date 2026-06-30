@@ -5,26 +5,45 @@ Configuration and Gemini Client
 """
 
 import os
+import streamlit as st
 from dotenv import load_dotenv
 from google import genai
 
 # Load .env
 load_dotenv()
 
-# API Key
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-if not GOOGLE_API_KEY:
-    raise ValueError(
-        "GOOGLE_API_KEY not found.\n"
-        "Create a .env file and add:\n"
-        "GOOGLE_API_KEY=YOUR_API_KEY"
-    )
+def get_api_key():
+    """Read the API key from local env files or Streamlit Cloud secrets."""
+
+    for key_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+        value = os.getenv(key_name)
+        if value:
+            return value
+
+    try:
+        secrets = st.secrets
+        for key_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY"):
+            value = secrets.get(key_name)
+            if value:
+                return value
+    except Exception:
+        pass
+
+    return None
+
+
+# API Key
+GOOGLE_API_KEY = get_api_key()
 
 # Gemini Client
-client = genai.Client(
-    api_key=GOOGLE_API_KEY
-)
+client = None
+
+if GOOGLE_API_KEY:
+    try:
+        client = genai.Client(api_key=GOOGLE_API_KEY)
+    except Exception:
+        client = None
 
 # Model Name
 MODEL_NAME = "gemini-2.5-flash"
