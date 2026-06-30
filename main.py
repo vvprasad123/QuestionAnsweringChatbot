@@ -11,7 +11,8 @@ from dotenv import load_dotenv
 from ui import ChatUI
 from file_handler import FileHandler
 from image_handler import ImageHandler
-from config import GOOGLE_API_KEY, GOOGLE_API_KEY_ERROR, client
+import config as app_config
+from config import GOOGLE_API_KEY, client
 
 
 # ==========================================
@@ -31,8 +32,8 @@ if not ai_ready:
         initial_sidebar_state="expanded"
     )
     st.error("❌ GOOGLE_API_KEY not found. Add it to Streamlit Cloud secrets or your local .env file.")
-    if GOOGLE_API_KEY_ERROR:
-        st.caption(f"Details: {GOOGLE_API_KEY_ERROR}")
+    if getattr(app_config, "GOOGLE_API_KEY_ERROR", None):
+        st.caption(f"Details: {app_config.GOOGLE_API_KEY_ERROR}")
     st.info("AI chat and image analysis will stay unavailable until the key is configured.")
 
 
