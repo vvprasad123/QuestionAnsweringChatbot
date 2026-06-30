@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from ui import ChatUI
 from file_handler import FileHandler
 from image_handler import ImageHandler
-from config import GOOGLE_API_KEY, GOOGLE_API_KEY_ERROR
+from config import GOOGLE_API_KEY, GOOGLE_API_KEY_ERROR, client
 
 
 # ==========================================
@@ -21,8 +21,9 @@ from config import GOOGLE_API_KEY, GOOGLE_API_KEY_ERROR
 load_dotenv()
 
 api_key = GOOGLE_API_KEY or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+ai_ready = bool(api_key and client)
 
-if not api_key:
+if not ai_ready:
     st.set_page_config(
         page_title="AI Assistant",
         page_icon="🤖",
@@ -32,7 +33,7 @@ if not api_key:
     st.error("❌ GOOGLE_API_KEY not found. Add it to Streamlit Cloud secrets or your local .env file.")
     if GOOGLE_API_KEY_ERROR:
         st.caption(f"Details: {GOOGLE_API_KEY_ERROR}")
-    st.stop()
+    st.info("AI chat and image analysis will stay unavailable until the key is configured.")
 
 
 # ==========================================
@@ -309,13 +310,16 @@ if prompt:
 
             try:
 
-                # Generate AI Response
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=history
-                )
+                if not ai_ready:
+                    answer = "⚠️ AI features are unavailable because GOOGLE_API_KEY is not configured yet."
+                else:
+                    # Generate AI Response
+                    response = client.models.generate_content(
+                        model=model_name,
+                        contents=history
+                    )
 
-                answer = response.text
+                    answer = response.text
 
             except Exception as e:
 
